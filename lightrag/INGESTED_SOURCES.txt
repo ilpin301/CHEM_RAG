@@ -2,3 +2,6 @@
 # Slices (stem-NN-MM.pdf) are never listed; only the source they came from.
 # PARTIAL families go here as a commented entry naming the missing page range.
 Musterlösung zur Übung 2.pdf
+Musterlösung zur Übung 4.pdf
+Musterlösung zur Übung 5.pdf
+Musterlösung zur Übung 6.pdf
