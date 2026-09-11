@@ -1,0 +1,31 @@
+# --- secrets ---
+# .env holds the live Z.ai API key and the LightRAG API key. Never commit it.
+.env
+.env.*
+!.env.example
+
+# --- the RAG store itself ---
+# Not versioned: it is 55 MB of binary-ish JSON that changes on every ingest, and it is
+# backed up to Drive via rag_sync.ps1 instead. Qdrant vectors live in a docker volume,
+# so they are not under data/ at all - rag_sync.ps1 snapshots them over the API.
+/lightrag/data/
+/lightrag/LOG/
+/lightrag/ingest_list.txt
+/lightrag/keepawake.pid
+
+# --- corpus ---
+# FOUND/ (30 MB of harvested PDFs) and CHEM.rar (29 MB, the same corpus archived) stay
+# out of history on purpose. IN/ is tracked - it is the small, curated ingest queue.
+/FOUND/
+*.rar
+
+# --- run artifacts ---
+*.log
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.cache/
+.playwright-mcp/
+.obsidian/
+.trash/
