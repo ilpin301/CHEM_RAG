@@ -29,6 +29,14 @@ Sources are lecture exercises, worked solutions and harvested papers, so filenam
   not just `page.get_images()`. Image-heavy → MinerU/VLM path; text-only → text path.
 - Slice PDFs over 10 pages before ingest; delete slice PDFs only after all slices are confirmed
   processed.
+- **After a verified source, delete its parse artifacts.** `lightrag\data\mineru_output\<source-stem>*`
+  and `lightrag\data\merged_ingest\<source-stem>\` go **together**, and only once the source passed
+  verification and is written to the ledger. `merged_ingest\<src>\parsed\*.json` is the resume cache and
+  its `img_path` entries point into `mineru_output`: delete one without the other and a resumed run
+  replays a parse cache whose images are gone, so every image caption fails while the run still exits 0.
+  Never touch either for a source still in flight or stuck `handling` - that pair is what lets a
+  quota-stopped run skip MinerU on relaunch. Left alone they grow without bound: 152 MB across the three
+  bases by 2026-09-16.
 - Record every ingested SOURCE in `lightrag\INGESTED_SOURCES.txt`, not the slice names.
 - Verify every ingest with: doc count delta, graph node delta, vector sanity check, one targeted
   query, and the permanent-loss grep over the archived log.
