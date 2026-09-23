@@ -12,8 +12,8 @@ Sources are lecture exercises, worked solutions and harvested papers, so filenam
   source still go in ONE run. A failed or lossy source STOPS the queue; report and wait.
 - **After each source, `rag_sync.ps1 push` before the next one launches.** The per-source
   cleanup is not done until that push succeeds. If `J:` is missing, Google Drive is not
-  running - start `GoogleDriveFS.exe` (newest folder under
-  `C:\Program Files\Google\Drive File Stream`), wait for `J:\My Drive` to appear, then push.
+  running - start `GoogleDriveFS.exe` (newest version folder under
+  `C:\Program Files\Google\Drive File Stream` that contains it - not `Drivers`, which sorts last by name), wait for `J:\My Drive` to appear, then push.
   Native PowerShell only. A failed push stops the queue, same as a failed ingest.
 - Always launch ingests via the ragkit launcher, detached, never inline:
   `& $env:RAGKIT_HOME\ingest.ps1 -Root X:\RAG_MAIN\CHEM_RAG -ListFile <utf8 list>`. It produces
