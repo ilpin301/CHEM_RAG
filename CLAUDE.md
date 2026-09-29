@@ -15,6 +15,11 @@ Sources are lecture exercises, worked solutions and harvested papers, so filenam
   running - start `GoogleDriveFS.exe` (newest version folder under
   `C:\Program Files\Google\Drive File Stream` that contains it - not `Drivers`, which sorts last by name), wait for `J:\My Drive` to appear, then push.
   Native PowerShell only. A failed push stops the queue, same as a failed ingest.
+- **Start Google Drive at the START of a run** (not right before the push) so it warms up while the ingest
+  runs. Before `rag_sync.ps1 push`, if `GoogleDriveFS` has been up < 5 min, wait until it has been up 5 min.
+  Why: 2026-09-29 a cold-started Drive (~1 min before the push) made the `Copy-Item` overwrite of
+  `rag_storage.tgz` on the streaming mount block >4 min while Drive fetched the old ~1 GB archive; warm
+  pushes do not download. Evidence is correlation, cause not proven.
 - Always launch ingests via the ragkit launcher, detached, never inline:
   `& $env:RAGKIT_HOME\ingest.ps1 -Root X:\RAG_MAIN\CHEM_RAG -ListFile <utf8 list>`. It produces
   `lightrag\LOG\ingest_run.log`, which progress checks depend on, and it owns `docker compose`
