@@ -32,3 +32,5 @@ Standards_signifikanteStellen_Nomenklatur_AAC.pdf
 20260116_Übung_11_AH(1).pdf
 20260123_Übung_12_AH(1).pdf
 20260130_Übung_13_AH(1).pdf
+# PARTIAL: Chemie, 10. Auflage (Charles E. Mortimer, Ulrich Müller) - only pp. 2-3 (SI units table) and 7-10 (imprint/preface) ingested 2026-10-14 via text upload as 'Chemie, 10. Auflage (Charles E. Mortimer, Ulrich Müller)-002-003.pdf' and '-007-010.pdf'; rest of the book (FOUND\ -022-803-* slices) NOT ingested
+# PARTIAL: Chemie, 10. Auflage (Charles E. Mortimer, Ulrich Müller) - also ingested 2026-10-14 as 'Chemie, 10. Auflage (Charles E. Mortimer, Ulrich Müller)-022-803-001-014.pdf' (14 pages, chapter 1 Einleitung, merged MinerU route, 36 chunks); rest of the -022-803-* slices in FOUND\ NOT ingested
