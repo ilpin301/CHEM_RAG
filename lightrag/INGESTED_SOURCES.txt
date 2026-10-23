@@ -57,3 +57,5 @@ Standards_signifikanteStellen_Nomenklatur_AAC.pdf
 Chemie, 10. Auflage (Charles E. Mortimer, Ulrich Müller)-022-803-303-327.pdf
 # 059-088 source line added 2026-10-22: already fully ingested 2026-10-16 as slices -01-10/-11-20/-21-30 (see PARTIAL note); listed so the IN\ diff stops flagging it
 Chemie, 10. Auflage (Charles E. Mortimer, Ulrich Müller)-022-803-059-088.pdf
+# 2026-10-23: pp. 329-340 (12 pages, chapter 20 Löslichkeitsprodukt und Komplex-Gleichgewichte), probe said TEXT (0 images, maxdraw 48) but text layer garbles Cl as 'CB', so user chose merged MinerU route -Merged -Pages 10, EXITCODE=0, 64 chunks (55/55 multimodal), zero permanent losses, 61 benign 'LLM output format error' (3.4% of 1782 entities); graph nodes 33521 -> 34032, edges 167882 -> 171117; Qdrant chunks 4238 / entities 34031 / relationships 171132
+Chemie, 10. Auflage (Charles E. Mortimer, Ulrich Müller)-022-803-329-340.pdf
