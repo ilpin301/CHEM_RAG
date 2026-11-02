@@ -11,7 +11,7 @@ Sources are lecture exercises, worked solutions and harvested papers, so filenam
   cannot be attributed and the delete/re-ingest repair costs minutes per document. Slices of ONE
   source still go in ONE run. A failed or lossy source STOPS the queue; report and wait.
 - **After each source, `rag_sync.ps1 push` before the next one launches.** The per-source
-  cleanup is not done until that push succeeds. If `J:` is missing, Google Drive is not
+  cleanup is not done until that push succeeds AND the cloud check below says VERIFIED. If `J:` is missing, Google Drive is not
   running - start `GoogleDriveFS.exe` (newest version folder under
   `C:\Program Files\Google\Drive File Stream` that contains it - not `Drivers`, which sorts last by name), wait for `J:\My Drive` to appear, then push.
   Native PowerShell only. A failed push stops the queue, same as a failed ingest.
@@ -20,6 +20,15 @@ Sources are lecture exercises, worked solutions and harvested papers, so filenam
   Why: 2026-09-29 a cold-started Drive (~1 min before the push) made the `Copy-Item` overwrite of
   `rag_storage.tgz` on the streaming mount block >4 min while Drive fetched the old ~1 GB archive; warm
   pushes do not download. Evidence is correlation, cause not proven.
+- **keepawake runs from the start of the run until the backup is VERIFIED in Google's cloud.** Start
+  `lightrag\keepawake.ps1` before anything else; the push runs under it. `rag_sync.ps1 push` exit 0 only
+  means the archive reached the local `J:` mount, never call that "backed up". VERIFIED = the cloud
+  `rag_storage.tgz` in this base's Drive folder (Google Drive MCP, filter by the folder's `parentId`, one
+  archive per base) has `fileSize` equal to the local file AND `modifiedTime` after the push started.
+  Not yet: keep keepawake and GoogleDriveFS up, re-check every ~5 min, give up after 60 min and report.
+  Only then stop keepawake and let the next source start (il-rag-ingest Step 8).
+  Why: 2026-10-22 keepawake was stopped before the push; Windows slept mid-push (Kernel-Power 42, System
+  Idle), and "push OK" was reported while the cloud still held the previous day's archive.
 - Always launch ingests via the ragkit launcher, detached, never inline:
   `& $env:RAGKIT_HOME\ingest.ps1 -Root X:\RAG_MAIN\CHEM_RAG -ListFile <utf8 list>`. It produces
   `lightrag\LOG\ingest_run.log`, which progress checks depend on, and it owns `docker compose`
@@ -34,14 +43,24 @@ Sources are lecture exercises, worked solutions and harvested papers, so filenam
   not just `page.get_images()`. Image-heavy → MinerU/VLM path; text-only → text path.
 - Slice PDFs over 10 pages before ingest; delete slice PDFs only after all slices are confirmed
   processed.
-- **After a verified source, delete its parse artifacts.** `lightrag\data\mineru_output\<source-stem>*`
-  and `lightrag\data\merged_ingest\<source-stem>\` go **together**, and only once the source passed
+- **After a verified source, delete its parse artifacts** with
+  `python $env:RAGKIT_HOME\ingest_merged.py --cleanup "<source.pdf>" --apply` (`RAGBASE_ROOT` set; drop
+  `--apply` for a dry run). It removes `merged_ingest\<work_key>` and `mineru_output\<work_key>__p*`
+  (work_key = 30-char stem prefix + hash of the full stem; plain `<source-stem>*` globs never match).
+  The launcher now does this (plus both cache files) automatically on a clean success (ragkit
+  `ingest.ps1` AUTO-CLEAN); manual `--cleanup` remains for a skipped/failed case.
+  They go **together**, and only once the source passed
   verification and is written to the ledger. `merged_ingest\<src>\parsed\*.json` is the resume cache and
   its `img_path` entries point into `mineru_output`: delete one without the other and a resumed run
   replays a parse cache whose images are gone, so every image caption fails while the run still exits 0.
   Never touch either for a source still in flight or stuck `handling` - that pair is what lets a
   quota-stopped run skip MinerU on relaunch. Left alone they grow without bound: 152 MB across the three
   bases by 2026-09-16.
+- **Fresh source = no `cached:` lines.** On the FIRST launch of a source the run log must contain
+  `parsing ...` lines and never `cached:` (legitimate only on a resume after a quota stop/crash). A
+  `cached:` line on a fresh source, or a `STALE parse cache` line, means stop and inspect before trusting
+  `EXITCODE=0`. Why: 2026-10-20 a truncated-stem collision made the 201-210 ingest replay the 183-200
+  parse; fixed by `work_key` + `source.sha256` in ragkit.
 - Record every ingested SOURCE in `lightrag\INGESTED_SOURCES.txt`, not the slice names.
 - Verify every ingest with: doc count delta, graph node delta, vector sanity check, one targeted
   query, and the permanent-loss grep over the archived log.

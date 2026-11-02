@@ -1,0 +1,2 @@
+$f='X:\RAG_MAIN\CHEM_RAG\lightrag\LOG\ingest_run.log'; $n=[Math]::Max(0,(@(Get-Content -LiteralPath $f -EA 0).Count-20))
+while ($true) { $l=@(Get-Content -LiteralPath $f -EA 0); if($l.Count -lt $n){$n=0}; if($l.Count -gt $n){$l[$n..($l.Count-1)]; $n=$l.Count}; Start-Sleep 5 }
